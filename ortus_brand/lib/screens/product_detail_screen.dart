@@ -4,6 +4,8 @@ import '../services/product_service.dart';
 import '../services/order_service.dart';
 import '../models/product_model.dart';
 import '../models/order_model.dart';
+import 'package:provider/provider.dart';
+import '../providers/auth_provider.dart';
 import '../widgets/custom_button.dart';
 import '../utils/constants.dart';
 
@@ -323,49 +325,50 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               ),
             ),
           ),
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 10,
-                  offset: const Offset(0, -2),
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Итого:',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
+          if (!Provider.of<AuthProvider>(context, listen: false).user!.isAdmin)
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, -2),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Итого:',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                    Text(
-                      '${(_product!.price * _quantity).toStringAsFixed(0)} ₸',
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primary,
+                      Text(
+                        '${(_product!.price * _quantity).toStringAsFixed(0)} ₸',
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                CustomButton(
-                  text: 'Оформить заказ',
-                  onPressed: selectedSizeData.stock > 0 ? _placeOrder : () {},
-                  isLoading: _isOrdering,
-                ),
-              ],
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  CustomButton(
+                    text: 'Оформить заказ',
+                    onPressed: selectedSizeData.stock > 0 ? _placeOrder : () {},
+                    isLoading: _isOrdering,
+                  ),
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );

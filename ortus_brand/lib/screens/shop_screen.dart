@@ -77,18 +77,14 @@ class _ShopScreenState extends State<ShopScreen> {
         selectedItemColor: AppColors.primary,
         unselectedItemColor: AppColors.grey,
         type: BottomNavigationBarType.fixed,
-        items: [
-          const BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long),
-            label: '',
-          ),
+        showSelectedLabels: true,
+        showUnselectedLabels: false,
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_bag),
             label: 'Магазин',
-            backgroundColor: AppColors.primary,
           ),
-          const BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Профиль'),
         ],
       ),
     );
@@ -257,13 +253,17 @@ class _ShopScreenState extends State<ShopScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          _buildMenuItem(
-            icon: Icons.shopping_bag,
-            title: 'Мои заказы',
-            onTap: () => Navigator.pushNamed(context, '/my-orders'),
-          ),
+
+          // Мои заказы - только для customer
+          if (user?.isAdmin == false)
+            _buildMenuItem(
+              icon: Icons.shopping_bag,
+              title: 'Мои заказы',
+              onTap: () => Navigator.pushNamed(context, '/my-orders'),
+            ),
+
+          // Админские функции
           if (user?.isAdmin == true) ...[
-            const SizedBox(height: 8),
             _buildMenuItem(
               icon: Icons.inventory,
               title: 'Управление товарами',
@@ -276,6 +276,7 @@ class _ShopScreenState extends State<ShopScreen> {
               onTap: () => Navigator.pushNamed(context, '/delivery-requests'),
             ),
           ],
+
           const SizedBox(height: 8),
           _buildMenuItem(
             icon: Icons.exit_to_app,
