@@ -33,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.black,
+      backgroundColor: AppColors.white,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -43,7 +43,7 @@ class _SplashScreenState extends State<SplashScreen> {
             const Text(
               'ORTUS BRAND',
               style: TextStyle(
-                color: AppColors.white,
+                color: AppColors.black,
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
               ),

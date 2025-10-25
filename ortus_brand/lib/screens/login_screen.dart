@@ -39,17 +39,18 @@ class _LoginScreenState extends State<LoginScreen> {
     final authProvider = Provider.of<AuthProvider>(context);
 
     return Scaffold(
-      backgroundColor: AppColors.black,
+      backgroundColor: AppColors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Image.asset('assets/images/logo.png', height: 120),
               const Text(
                 'ORTUS BRAND',
                 style: TextStyle(
-                  color: AppColors.white,
+                  color: AppColors.black,
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
                 ),
@@ -57,12 +58,12 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 60),
               TextField(
                 controller: _phoneController,
-                style: const TextStyle(color: AppColors.white),
+                style: const TextStyle(color: AppColors.black),
                 decoration: InputDecoration(
                   hintText: 'Номер телефона',
-                  hintStyle: TextStyle(color: AppColors.grey),
+                  hintStyle: TextStyle(color: AppColors.black),
                   filled: true,
-                  fillColor: AppColors.white.withOpacity(0.1),
+                  fillColor: AppColors.grey.withOpacity(0.1),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
@@ -73,13 +74,13 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 16),
               TextField(
                 controller: _passwordController,
-                style: const TextStyle(color: AppColors.white),
+                style: const TextStyle(color: AppColors.black),
                 obscureText: true,
                 decoration: InputDecoration(
                   hintText: 'Пароль',
-                  hintStyle: TextStyle(color: AppColors.grey),
+                  hintStyle: TextStyle(color: AppColors.black),
                   filled: true,
-                  fillColor: AppColors.white.withOpacity(0.1),
+                  fillColor: AppColors.grey.withOpacity(0.1),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,

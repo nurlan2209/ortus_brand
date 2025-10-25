@@ -34,19 +34,10 @@ class _ShopScreenState extends State<ShopScreen> {
     return Scaffold(
       backgroundColor: AppColors.lightGrey,
       appBar: AppBar(
-        backgroundColor: AppColors.black,
+        backgroundColor: AppColors.white,
         title: Row(
           children: [
-            Image.asset('assets/images/logo.png', height: 40),
-            const SizedBox(width: 8),
-            const Text(
-              'ORTUS',
-              style: TextStyle(
-                color: AppColors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
+            Image.asset('assets/images/logo.png', height: 60),
           ],
         ),
         actions: [
