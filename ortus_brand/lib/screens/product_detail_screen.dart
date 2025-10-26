@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../services/product_service.dart';
-import '../services/order_service.dart';
 import '../models/product_model.dart';
 import '../models/order_model.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
+import '../providers/cart_provider.dart';
 import '../widgets/custom_button.dart';
 import '../utils/constants.dart';
 
@@ -23,7 +23,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   bool _isLoading = true;
   String? _selectedSize;
   int _quantity = 1;
-  bool _isOrdering = false;
 
   @override
   void initState() {
@@ -46,7 +45,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     });
   }
 
-  void _placeOrder() async {
+  void _addToCart() {
     if (_product == null || _selectedSize == null) return;
 
     final sizeData = _product!.sizes.firstWhere((s) => s.size == _selectedSize);
@@ -57,7 +56,40 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       return;
     }
 
-    setState(() => _isOrdering = true);
+    final orderItem = OrderItem(
+      productId: _product!.id,
+      name: _product!.name,
+      price: _product!.price,
+      size: _selectedSize!,
+      quantity: _quantity,
+      image: _product!.images.isNotEmpty ? _product!.images[0] : null,
+    );
+
+    Provider.of<CartProvider>(context, listen: false).addItem(orderItem);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${_product!.name} (${_selectedSize}) добавлен в корзину'),
+        action: SnackBarAction(
+          label: 'В корзину',
+          onPressed: () {
+            Navigator.pushNamed(context, '/cart');
+          },
+        ),
+      ),
+    );
+  }
+
+  void _buyNow() async {
+    if (_product == null || _selectedSize == null) return;
+
+    final sizeData = _product!.sizes.firstWhere((s) => s.size == _selectedSize);
+    if (sizeData.stock < _quantity) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Недостаточно товара на складе')),
+      );
+      return;
+    }
 
     final orderItem = OrderItem(
       productId: _product!.id,
@@ -68,34 +100,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       image: _product!.images.isNotEmpty ? _product!.images[0] : null,
     );
 
-    final order = await OrderService().createOrder([orderItem]);
-
-    setState(() => _isOrdering = false);
-
-    if (mounted) {
-      if (order != null) {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Заказ оформлен'),
-            content: Text('Заказ №${order.id.substring(0, 8)} создан успешно'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Ошибка оформления заказа')),
-        );
-      }
-    }
+    // Добавляем в корзину и переходим к оформлению
+    Provider.of<CartProvider>(context, listen: false).addItem(orderItem);
+    Navigator.pushNamed(context, '/cart');
   }
 
   @override
@@ -361,10 +368,36 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  CustomButton(
-                    text: 'Оформить заказ',
-                    onPressed: selectedSizeData.stock > 0 ? _placeOrder : () {},
-                    isLoading: _isOrdering,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: selectedSizeData.stock > 0 ? _addToCart : null,
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.primary,
+                            side: const BorderSide(color: AppColors.primary),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: const Text(
+                            'В корзину',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: CustomButton(
+                          text: 'Купить сейчас',
+                          onPressed: selectedSizeData.stock > 0 ? _buyNow : () {},
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

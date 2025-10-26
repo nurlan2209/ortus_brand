@@ -5,26 +5,68 @@ const createOrder = async (req, res) => {
   try {
     const { items } = req.body;
 
+    // Валидация входных данных
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ message: "Cart is empty" });
+    }
+
     let totalAmount = 0;
     const orderItems = [];
+    const productsToUpdate = [];
 
+    // Фаза 1: Валидация всех товаров и проверка остатков
     for (const item of items) {
-      const product = await Product.findById(item.productId);
-      if (!product || !product.isActive) {
-        return res
-          .status(404)
-          .json({ message: `Product ${item.productId} not found` });
-      }
-
-      const sizeData = product.sizes.find((s) => s.size === item.size);
-      if (!sizeData || sizeData.stock < item.quantity) {
+      // Проверка обязательных полей
+      if (!item.productId || !item.size || !item.quantity) {
         return res.status(400).json({
-          message: `Insufficient stock for ${product.name} (${item.size})`,
+          message: "Invalid item data. ProductId, size, and quantity are required",
         });
       }
 
-      sizeData.stock -= item.quantity;
-      await product.save();
+      // Проверка положительного количества
+      if (item.quantity <= 0) {
+        return res.status(400).json({
+          message: "Quantity must be greater than 0",
+        });
+      }
+
+      const product = await Product.findById(item.productId);
+
+      // Проверка существования товара
+      if (!product) {
+        return res.status(404).json({
+          message: `Товар с ID ${item.productId} не найден`,
+        });
+      }
+
+      // Проверка активности товара
+      if (!product.isActive) {
+        return res.status(400).json({
+          message: `Товар "${product.name}" больше не доступен для заказа`,
+        });
+      }
+
+      // Поиск размера
+      const sizeData = product.sizes.find((s) => s.size === item.size);
+      if (!sizeData) {
+        return res.status(400).json({
+          message: `Размер ${item.size} не доступен для товара "${product.name}"`,
+        });
+      }
+
+      // Проверка достаточности остатков
+      if (sizeData.stock < item.quantity) {
+        return res.status(400).json({
+          message: `Недостаточно товара "${product.name}" (${item.size}). В наличии: ${sizeData.stock} шт, запрошено: ${item.quantity} шт`,
+        });
+      }
+
+      // Сохраняем информацию для обновления
+      productsToUpdate.push({
+        product,
+        sizeData,
+        quantity: item.quantity,
+      });
 
       const itemTotal = product.price * item.quantity;
       totalAmount += itemTotal;
@@ -39,6 +81,13 @@ const createOrder = async (req, res) => {
       });
     }
 
+    // Фаза 2: Обновление остатков (только если вся валидация прошла успешно)
+    for (const { product, sizeData, quantity } of productsToUpdate) {
+      sizeData.stock -= quantity;
+      await product.save();
+    }
+
+    // Фаза 3: Создание заказа
     const order = await Order.create({
       userId: req.user._id,
       items: orderItems,
@@ -49,7 +98,8 @@ const createOrder = async (req, res) => {
 
     res.status(201).json(order);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Create order error:", error);
+    res.status(500).json({ message: "Ошибка создания заказа. Попробуйте позже" });
   }
 };
 
@@ -118,10 +168,46 @@ const getDeliveryRequests = async (req, res) => {
   }
 };
 
+const updateOrderStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    const { id } = req.params;
+
+    // Проверка прав админа
+    if (req.user.userType !== "admin") {
+      return res.status(403).json({ message: "Admin only" });
+    }
+
+    // Валидация статуса
+    const validStatuses = ["pending", "confirmed", "ready", "completed", "cancelled"];
+    if (!status || !validStatuses.includes(status)) {
+      return res.status(400).json({
+        message: `Invalid status. Must be one of: ${validStatuses.join(", ")}`,
+      });
+    }
+
+    const order = await Order.findById(id).populate("userId", "fullName phoneNumber");
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Обновление статуса
+    order.status = status;
+    await order.save();
+
+    res.json(order);
+  } catch (error) {
+    console.error("Update order status error:", error);
+    res.status(500).json({ message: "Failed to update order status" });
+  }
+};
+
 module.exports = {
   createOrder,
   getMyOrders,
   getAllOrders,
   requestDelivery,
   getDeliveryRequests,
+  updateOrderStatus,
 };

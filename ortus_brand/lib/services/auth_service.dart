@@ -70,4 +70,88 @@ class AuthService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('token');
   }
+
+  Future<Map<String, dynamic>?> getMe() async {
+    try {
+      final token = await getToken();
+      if (token == null) return null;
+
+      final response = await http.get(
+        Uri.parse('${ApiConfig.baseUrl}/auth/me'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      }
+      return null;
+    } catch (e) {
+      print('Get me error: $e');
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> updateDetails(
+    String? fullName,
+    String? phoneNumber,
+  ) async {
+    try {
+      final token = await getToken();
+      if (token == null) return null;
+
+      final body = <String, dynamic>{};
+      if (fullName != null) body['fullName'] = fullName;
+      if (phoneNumber != null) body['phoneNumber'] = phoneNumber;
+
+      final response = await http.patch(
+        Uri.parse('${ApiConfig.baseUrl}/auth/update-details'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode(body),
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      }
+      return null;
+    } catch (e) {
+      print('Update details error: $e');
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> changePassword(
+    String oldPassword,
+    String newPassword,
+  ) async {
+    try {
+      final token = await getToken();
+      if (token == null) return null;
+
+      final response = await http.post(
+        Uri.parse('${ApiConfig.baseUrl}/auth/change-password'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode({
+          'oldPassword': oldPassword,
+          'newPassword': newPassword,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        // Возвращаем ошибку от сервера
+        final error = json.decode(response.body);
+        return {'error': error['message'] ?? 'Unknown error'};
+      }
+    } catch (e) {
+      print('Change password error: $e');
+      return {'error': 'Ошибка соединения'};
+    }
+  }
 }
