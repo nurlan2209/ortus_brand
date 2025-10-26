@@ -108,4 +108,25 @@ class OrderService {
       return [];
     }
   }
+
+  Future<bool> updateOrderStatus(String orderId, String status) async {
+    try {
+      final token = await AuthService().getToken();
+      if (token == null) return false;
+
+      final response = await http.patch(
+        Uri.parse('${ApiConfig.baseUrl}/orders/$orderId/status'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode({'status': status}),
+      );
+
+      return response.statusCode == 200;
+    } catch (e) {
+      print('Update order status error: $e');
+      return false;
+    }
+  }
 }

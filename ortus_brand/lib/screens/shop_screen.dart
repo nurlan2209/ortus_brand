@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
+import '../providers/cart_provider.dart';
 import '../services/product_service.dart';
 import '../models/product_model.dart';
 import '../widgets/product_card.dart';
@@ -41,6 +42,46 @@ class _ShopScreenState extends State<ShopScreen> {
           ],
         ),
         actions: [
+          if (user?.isAdmin != true)
+            Consumer<CartProvider>(
+              builder: (context, cart, child) {
+                return Stack(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.shopping_cart, color: AppColors.black),
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/cart');
+                      },
+                    ),
+                    if (cart.itemCount > 0)
+                      Positioned(
+                        right: 8,
+                        top: 8,
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: const BoxDecoration(
+                            color: AppColors.primary,
+                            shape: BoxShape.circle,
+                          ),
+                          constraints: const BoxConstraints(
+                            minWidth: 18,
+                            minHeight: 18,
+                          ),
+                          child: Text(
+                            '${cart.itemCount}',
+                            style: const TextStyle(
+                              color: AppColors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              },
+            ),
           if (user?.isAdmin == true)
             Container(
               margin: const EdgeInsets.only(right: 8),
@@ -245,6 +286,15 @@ class _ShopScreenState extends State<ShopScreen> {
           ),
           const SizedBox(height: 16),
 
+          // Профиль - для всех пользователей
+          _buildMenuItem(
+            icon: Icons.edit,
+            title: 'Редактировать профиль',
+            onTap: () => Navigator.pushNamed(context, '/profile'),
+          ),
+
+          const SizedBox(height: 8),
+
           // Мои заказы - только для customer
           if (user?.isAdmin == false)
             _buildMenuItem(
@@ -259,6 +309,12 @@ class _ShopScreenState extends State<ShopScreen> {
               icon: Icons.inventory,
               title: 'Управление товарами',
               onTap: () => Navigator.pushNamed(context, '/admin-products'),
+            ),
+            const SizedBox(height: 8),
+            _buildMenuItem(
+              icon: Icons.list_alt,
+              title: 'Все заказы',
+              onTap: () => Navigator.pushNamed(context, '/admin-orders'),
             ),
             const SizedBox(height: 8),
             _buildMenuItem(
