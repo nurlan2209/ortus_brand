@@ -115,7 +115,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   hintText: 'Email',
                   hintStyle: const TextStyle(color: AppColors.black),
                   filled: true,
-                  fillColor: AppColors.grey.withOpacity(0.1),
+                  fillColor: AppColors.grey.withValues(alpha: 0.1),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
@@ -132,7 +132,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     hintText: 'Код из email',
                     hintStyle: const TextStyle(color: AppColors.black),
                     filled: true,
-                    fillColor: AppColors.grey.withOpacity(0.1),
+                    fillColor: AppColors.grey.withValues(alpha: 0.1),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
@@ -149,7 +149,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     hintText: 'Новый пароль',
                     hintStyle: const TextStyle(color: AppColors.black),
                     filled: true,
-                    fillColor: AppColors.grey.withOpacity(0.1),
+                    fillColor: AppColors.grey.withValues(alpha: 0.1),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
