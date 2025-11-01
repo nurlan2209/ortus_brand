@@ -42,46 +42,6 @@ class _ShopScreenState extends State<ShopScreen> {
           ],
         ),
         actions: [
-          if (user?.isAdmin != true)
-            Consumer<CartProvider>(
-              builder: (context, cart, child) {
-                return Stack(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.shopping_cart, color: AppColors.black),
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/cart');
-                      },
-                    ),
-                    if (cart.itemCount > 0)
-                      Positioned(
-                        right: 8,
-                        top: 8,
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: const BoxDecoration(
-                            color: AppColors.primary,
-                            shape: BoxShape.circle,
-                          ),
-                          constraints: const BoxConstraints(
-                            minWidth: 18,
-                            minHeight: 18,
-                          ),
-                          child: Text(
-                            '${cart.itemCount}',
-                            style: const TextStyle(
-                              color: AppColors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                  ],
-                );
-              },
-            ),
           if (user?.isAdmin == true)
             Container(
               margin: const EdgeInsets.only(right: 8),

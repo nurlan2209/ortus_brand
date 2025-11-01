@@ -40,6 +40,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.white,
+      appBar: AppBar(
+        backgroundColor: AppColors.white,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -63,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   hintText: 'Номер телефона',
                   hintStyle: TextStyle(color: AppColors.black),
                   filled: true,
-                  fillColor: AppColors.grey.withOpacity(0.1),
+                  fillColor: AppColors.grey.withValues(alpha: 0.1),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
@@ -80,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   hintText: 'Пароль',
                   hintStyle: TextStyle(color: AppColors.black),
                   filled: true,
-                  fillColor: AppColors.grey.withOpacity(0.1),
+                  fillColor: AppColors.grey.withValues(alpha: 0.1),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,

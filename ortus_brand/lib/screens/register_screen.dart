@@ -47,14 +47,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: AppColors.black,
-          ),
-          onPressed: () =>
-              Navigator.pop(context),
-        ),
+        automaticallyImplyLeading: false,
       ),
       body: SafeArea(
         child: Padding(
@@ -79,7 +72,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   hintText: 'ФИО',
                   hintStyle: TextStyle(color: AppColors.black),
                   filled: true,
-                  fillColor: AppColors.grey.withOpacity(0.1),
+                  fillColor: AppColors.grey.withValues(alpha: 0.1),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
@@ -94,7 +87,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   hintText: 'Номер телефона',
                   hintStyle: TextStyle(color: AppColors.black),
                   filled: true,
-                  fillColor: AppColors.grey.withOpacity(0.1),
+                  fillColor: AppColors.grey.withValues(alpha: 0.1),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
@@ -110,7 +103,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   hintText: 'Email',
                   hintStyle: TextStyle(color: AppColors.black),
                   filled: true,
-                  fillColor: AppColors.grey.withOpacity(0.1),
+                  fillColor: AppColors.grey.withValues(alpha: 0.1),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
@@ -127,7 +120,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   hintText: 'Пароль',
                   hintStyle: TextStyle(color: AppColors.black),
                   filled: true,
-                  fillColor: AppColors.grey.withOpacity(0.1),
+                  fillColor: AppColors.grey.withValues(alpha: 0.1),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
