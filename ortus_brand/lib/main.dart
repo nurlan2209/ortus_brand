@@ -14,6 +14,7 @@ import 'screens/create_product_screen.dart';
 import 'screens/delivery_requests_screen.dart';
 import 'screens/cart_screen.dart';
 import 'screens/profile_screen.dart';
+import 'screens/forgot_password_screen.dart';
 import 'utils/constants.dart';
 
 void main() {
@@ -49,6 +50,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const SplashScreen(),
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
+        '/forgot-password': (context) => const ForgotPasswordScreen(),
         '/shop': (context) => const ShopScreen(),
         '/cart': (context) => const CartScreen(),
         '/my-orders': (context) => const MyOrdersScreen(),
