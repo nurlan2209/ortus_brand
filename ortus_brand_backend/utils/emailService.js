@@ -3,7 +3,9 @@ const nodemailer = require("nodemailer");
 // Создаем транспорт для отправки email
 const createTransporter = () => {
   return nodemailer.createTransport({
-    service: "gmail", // Можно изменить на другой сервис
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true, // Использовать SSL
     auth: {
       user: process.env.EMAIL_USER, // Email отправителя
       pass: process.env.EMAIL_PASSWORD, // Пароль приложения
