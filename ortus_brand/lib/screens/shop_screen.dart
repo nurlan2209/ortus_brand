@@ -123,6 +123,8 @@ class _ShopScreenState extends State<ShopScreen> {
   }
 
   Widget _buildShopTab() {
+    final user = Provider.of<AuthProvider>(context).user;
+
     return Column(
       children: [
         Container(
@@ -206,7 +208,7 @@ class _ShopScreenState extends State<ShopScreen> {
                           border: Border.all(
                             color: isSelected
                                 ? AppColors.primary
-                                : AppColors.grey.withOpacity(0.3),
+                                : AppColors.grey.withValues(alpha: 0.3),
                           ),
                         ),
                         child: Row(
