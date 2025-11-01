@@ -1,16 +1,22 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
+const { sendResetCode } = require("../utils/emailService");
 
 const register = async (req, res) => {
   try {
-    const { fullName, phoneNumber, password } = req.body;
+    const { fullName, phoneNumber, email, password } = req.body;
 
-    const existingUser = await User.findOne({ phoneNumber });
-    if (existingUser) {
+    const existingPhone = await User.findOne({ phoneNumber });
+    if (existingPhone) {
       return res.status(400).json({ message: "Phone number already exists" });
     }
 
-    const user = await User.create({ fullName, phoneNumber, password });
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) {
+      return res.status(400).json({ message: "Email already exists" });
+    }
+
+    const user = await User.create({ fullName, phoneNumber, email, password });
 
     const token = jwt.sign(
       { id: user._id, userType: user.userType },
@@ -24,6 +30,7 @@ const register = async (req, res) => {
         id: user._id,
         fullName: user.fullName,
         phoneNumber: user.phoneNumber,
+        email: user.email,
         userType: user.userType,
       },
     });
@@ -58,6 +65,7 @@ const login = async (req, res) => {
         id: user._id,
         fullName: user.fullName,
         phoneNumber: user.phoneNumber,
+        email: user.email,
         userType: user.userType,
       },
     });
@@ -118,6 +126,7 @@ const updateDetails = async (req, res) => {
       id: user._id,
       fullName: user.fullName,
       phoneNumber: user.phoneNumber,
+      email: user.email,
       userType: user.userType,
     });
   } catch (error) {
@@ -166,4 +175,93 @@ const changePassword = async (req, res) => {
   }
 };
 
-module.exports = { register, login, getMe, updateDetails, changePassword };
+// Запросить код восстановления пароля
+const requestPasswordReset = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "Пользователь с таким email не найден" });
+    }
+
+    // Генерируем 6-значный код
+    const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Сохраняем код и время истечения (15 минут)
+    user.resetCode = resetCode;
+    user.resetCodeExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 минут
+    await user.save();
+
+    // Отправляем код на email
+    const emailSent = await sendResetCode(email, resetCode, user.fullName);
+
+    if (!emailSent) {
+      return res.status(500).json({ message: "Не удалось отправить код на email" });
+    }
+
+    res.json({ message: "Код восстановления отправлен на email" });
+  } catch (error) {
+    console.error("Request password reset error:", error);
+    res.status(500).json({ message: "Failed to request password reset" });
+  }
+};
+
+// Сбросить пароль с кодом
+const resetPassword = async (req, res) => {
+  try {
+    const { email, code, newPassword } = req.body;
+
+    if (!email || !code || !newPassword) {
+      return res.status(400).json({
+        message: "Email, код и новый пароль обязательны"
+      });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        message: "Новый пароль должен содержать минимум 6 символов",
+      });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "Пользователь не найден" });
+    }
+
+    // Проверяем код
+    if (user.resetCode !== code) {
+      return res.status(401).json({ message: "Неверный код восстановления" });
+    }
+
+    // Проверяем, не истек ли код
+    if (!user.resetCodeExpires || user.resetCodeExpires < new Date()) {
+      return res.status(401).json({ message: "Код восстановления истек" });
+    }
+
+    // Обновляем пароль
+    user.password = newPassword;
+    user.resetCode = undefined;
+    user.resetCodeExpires = undefined;
+    await user.save();
+
+    res.json({ message: "Пароль успешно изменен" });
+  } catch (error) {
+    console.error("Reset password error:", error);
+    res.status(500).json({ message: "Failed to reset password" });
+  }
+};
+
+module.exports = {
+  register,
+  login,
+  getMe,
+  updateDetails,
+  changePassword,
+  requestPasswordReset,
+  resetPassword
+};

@@ -13,6 +13,7 @@ class AuthProvider extends ChangeNotifier {
   Future<bool> register(
     String fullName,
     String phoneNumber,
+    String email,
     String password,
   ) async {
     _isLoading = true;
@@ -21,6 +22,7 @@ class AuthProvider extends ChangeNotifier {
     final result = await AuthService().register(
       fullName,
       phoneNumber,
+      email,
       password,
     );
 

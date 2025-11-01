@@ -2,12 +2,14 @@ class UserModel {
   final String id;
   final String fullName;
   final String phoneNumber;
+  final String email;
   final String userType;
 
   UserModel({
     required this.id,
     required this.fullName,
     required this.phoneNumber,
+    required this.email,
     required this.userType,
   });
 
@@ -16,6 +18,7 @@ class UserModel {
       id: json['id'],
       fullName: json['fullName'],
       phoneNumber: json['phoneNumber'],
+      email: json['email'] ?? '',
       userType: json['userType'],
     );
   }

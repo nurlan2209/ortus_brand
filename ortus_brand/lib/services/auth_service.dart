@@ -8,6 +8,7 @@ class AuthService {
   Future<Map<String, dynamic>?> register(
     String fullName,
     String phoneNumber,
+    String email,
     String password,
   ) async {
     try {
@@ -17,6 +18,7 @@ class AuthService {
         body: json.encode({
           'fullName': fullName,
           'phoneNumber': phoneNumber,
+          'email': email,
           'password': password,
         }),
       );
@@ -151,6 +153,54 @@ class AuthService {
       }
     } catch (e) {
       print('Change password error: $e');
+      return {'error': 'Ошибка соединения'};
+    }
+  }
+
+  Future<Map<String, dynamic>?> requestPasswordReset(String email) async {
+    try {
+      final response = await http.post(
+        Uri.parse('${ApiConfig.baseUrl}/auth/request-password-reset'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({'email': email}),
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        final error = json.decode(response.body);
+        return {'error': error['message'] ?? 'Unknown error'};
+      }
+    } catch (e) {
+      print('Request password reset error: $e');
+      return {'error': 'Ошибка соединения'};
+    }
+  }
+
+  Future<Map<String, dynamic>?> resetPassword(
+    String email,
+    String code,
+    String newPassword,
+  ) async {
+    try {
+      final response = await http.post(
+        Uri.parse('${ApiConfig.baseUrl}/auth/reset-password'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'email': email,
+          'code': code,
+          'newPassword': newPassword,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        final error = json.decode(response.body);
+        return {'error': error['message'] ?? 'Unknown error'};
+      }
+    } catch (e) {
+      print('Reset password error: $e');
       return {'error': 'Ошибка соединения'};
     }
   }

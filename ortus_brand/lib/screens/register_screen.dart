@@ -14,6 +14,7 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   void _register() async {
@@ -22,6 +23,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final success = await authProvider.register(
       _nameController.text.trim(),
       _phoneController.text.trim(),
+      _emailController.text.trim(),
       _passwordController.text.trim(),
     );
 
@@ -87,7 +89,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 16),
               TextField(
                 controller: _phoneController,
-                style: const TextStyle(color: AppColors.white),
+                style: const TextStyle(color: AppColors.black),
                 decoration: InputDecoration(
                   hintText: 'Номер телефона',
                   hintStyle: TextStyle(color: AppColors.black),
@@ -102,8 +104,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 16),
               TextField(
+                controller: _emailController,
+                style: const TextStyle(color: AppColors.black),
+                decoration: InputDecoration(
+                  hintText: 'Email',
+                  hintStyle: TextStyle(color: AppColors.black),
+                  filled: true,
+                  fillColor: AppColors.grey.withOpacity(0.1),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+                keyboardType: TextInputType.emailAddress,
+              ),
+              const SizedBox(height: 16),
+              TextField(
                 controller: _passwordController,
-                style: const TextStyle(color: AppColors.white),
+                style: const TextStyle(color: AppColors.black),
                 obscureText: true,
                 decoration: InputDecoration(
                   hintText: 'Пароль',
