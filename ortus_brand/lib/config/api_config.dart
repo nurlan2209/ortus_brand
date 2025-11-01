@@ -1,4 +1,4 @@
 class ApiConfig {
   static const String baseUrl =
-      'https://ortusbrand-production.up.railway.app/api';
+      'https://ortusbrand-production-630b.up.railway.app/api';
 }

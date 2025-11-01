@@ -41,10 +41,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final authProvider = Provider.of<AuthProvider>(context);
 
     return Scaffold(
-      backgroundColor: AppColors.black,
+      backgroundColor: AppColors.white,
       appBar: AppBar(
-        backgroundColor: AppColors.black,
-        iconTheme: const IconThemeData(color: AppColors.white),
+        backgroundColor: AppColors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: AppColors.black,
+          ),
+          onPressed: () =>
+              Navigator.pop(context),
+        ),
       ),
       body: SafeArea(
         child: Padding(
@@ -52,10 +60,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Image.asset('assets/images/logo.png', height: 120),
               const Text(
                 'Регистрация',
                 style: TextStyle(
-                  color: AppColors.white,
+                  color: AppColors.black,
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
                 ),
@@ -63,12 +72,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 40),
               TextField(
                 controller: _nameController,
-                style: const TextStyle(color: AppColors.white),
+                style: const TextStyle(color: AppColors.black),
                 decoration: InputDecoration(
-                  hintText: 'Полное имя',
-                  hintStyle: TextStyle(color: AppColors.grey),
+                  hintText: 'ФИО',
+                  hintStyle: TextStyle(color: AppColors.black),
                   filled: true,
-                  fillColor: AppColors.white.withOpacity(0.1),
+                  fillColor: AppColors.grey.withOpacity(0.1),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
@@ -81,9 +90,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 style: const TextStyle(color: AppColors.white),
                 decoration: InputDecoration(
                   hintText: 'Номер телефона',
-                  hintStyle: TextStyle(color: AppColors.grey),
+                  hintStyle: TextStyle(color: AppColors.black),
                   filled: true,
-                  fillColor: AppColors.white.withOpacity(0.1),
+                  fillColor: AppColors.grey.withOpacity(0.1),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
@@ -98,9 +107,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 obscureText: true,
                 decoration: InputDecoration(
                   hintText: 'Пароль',
-                  hintStyle: TextStyle(color: AppColors.grey),
+                  hintStyle: TextStyle(color: AppColors.black),
                   filled: true,
-                  fillColor: AppColors.white.withOpacity(0.1),
+                  fillColor: AppColors.grey.withOpacity(0.1),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,

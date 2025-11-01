@@ -121,6 +121,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                     itemBuilder: (context, index) {
                       final order = _orders[index];
                       return Card(
+                        color: Colors.white,
                         margin: const EdgeInsets.only(bottom: 16),
                         child: ExpansionTile(
                           tilePadding: const EdgeInsets.all(16),
