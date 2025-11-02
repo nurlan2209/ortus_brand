@@ -20,61 +20,60 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   void _sendCode() async {
     if (_emailController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Введите email')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Введите email')));
       return;
     }
 
     setState(() => _isLoading = true);
-
-    final result = await AuthService().requestPasswordReset(_emailController.text.trim());
-
+    final result = await AuthService().requestPasswordReset(
+      _emailController.text.trim(),
+    );
     setState(() => _isLoading = false);
 
-    if (mounted) {
-      if (result != null && result['error'] == null) {
-        setState(() => _codeSent = true);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Код отправлен на email')),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result?['error'] ?? 'Ошибка отправки кода')),
-        );
-      }
+    if (!mounted) return;
+
+    if (result != null && result['error'] == null) {
+      setState(() => _codeSent = true);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Код отправлен на email')));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result?['error'] ?? 'Ошибка отправки кода')),
+      );
     }
   }
 
   void _resetPassword() async {
-    if (_codeController.text.trim().isEmpty || _newPasswordController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Заполните все поля')),
-      );
+    if (_codeController.text.trim().isEmpty ||
+        _newPasswordController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Заполните все поля')));
       return;
     }
 
     setState(() => _isLoading = true);
-
     final result = await AuthService().resetPassword(
       _emailController.text.trim(),
       _codeController.text.trim(),
       _newPasswordController.text.trim(),
     );
-
     setState(() => _isLoading = false);
 
-    if (mounted) {
-      if (result != null && result['error'] == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Пароль успешно изменен')),
-        );
-        Navigator.pop(context);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result?['error'] ?? 'Ошибка сброса пароля')),
-        );
-      }
+    if (!mounted) return;
+
+    if (result != null && result['error'] == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Пароль успешно изменен')));
+      Navigator.pop(context);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result?['error'] ?? 'Ошибка сброса пароля')),
+      );
     }
   }
 
@@ -82,6 +81,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
+      resizeToAvoidBottomInset: true, // <--- важно
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
@@ -91,11 +91,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         ),
       ),
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
+          // <--- решает проблему overflow
           padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              const SizedBox(height: 20),
               Image.asset('assets/images/logo.png', height: 120),
               const SizedBox(height: 20),
               const Text(
@@ -173,6 +175,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                 ),
               ],
+              const SizedBox(height: 40),
             ],
           ),
         ),

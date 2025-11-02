@@ -44,18 +44,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.white,
+      resizeToAvoidBottomInset:
+          true,
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true, 
+        iconTheme: const IconThemeData(color: AppColors.black),
       ),
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              const SizedBox(height: 20),
               Image.asset('assets/images/logo.png', height: 120),
+              const SizedBox(height: 12),
               const Text(
                 'Регистрация',
                 style: TextStyle(
@@ -70,7 +75,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 style: const TextStyle(color: AppColors.black),
                 decoration: InputDecoration(
                   hintText: 'ФИО',
-                  hintStyle: TextStyle(color: AppColors.black),
+                  hintStyle: const TextStyle(color: AppColors.black),
                   filled: true,
                   fillColor: AppColors.grey.withValues(alpha: 0.1),
                   border: OutlineInputBorder(
@@ -85,7 +90,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 style: const TextStyle(color: AppColors.black),
                 decoration: InputDecoration(
                   hintText: 'Номер телефона',
-                  hintStyle: TextStyle(color: AppColors.black),
+                  hintStyle: const TextStyle(color: AppColors.black),
                   filled: true,
                   fillColor: AppColors.grey.withValues(alpha: 0.1),
                   border: OutlineInputBorder(
@@ -101,7 +106,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 style: const TextStyle(color: AppColors.black),
                 decoration: InputDecoration(
                   hintText: 'Email',
-                  hintStyle: TextStyle(color: AppColors.black),
+                  hintStyle: const TextStyle(color: AppColors.black),
                   filled: true,
                   fillColor: AppColors.grey.withValues(alpha: 0.1),
                   border: OutlineInputBorder(
@@ -118,7 +123,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 obscureText: true,
                 decoration: InputDecoration(
                   hintText: 'Пароль',
-                  hintStyle: TextStyle(color: AppColors.black),
+                  hintStyle: const TextStyle(color: AppColors.black),
                   filled: true,
                   fillColor: AppColors.grey.withValues(alpha: 0.1),
                   border: OutlineInputBorder(
@@ -133,6 +138,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 onPressed: _register,
                 isLoading: authProvider.isLoading,
               ),
+              const SizedBox(height: 16),
+              TextButton(
+                onPressed: () =>
+                    Navigator.pop(context),
+                child: const Text(
+                  'Уже есть аккаунт? Войти',
+                  style: TextStyle(color: AppColors.primary, fontSize: 16),
+                ),
+              ),
+              const SizedBox(height: 40),
             ],
           ),
         ),

@@ -46,11 +46,15 @@ class _LoginScreenState extends State<LoginScreen> {
         automaticallyImplyLeading: false,
       ),
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
+          // 👈 добавляем
           padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.1,
+              ), // немного отступа сверху
               Image.asset('assets/images/logo.png', height: 120),
               const Text(
                 'ORTUS BRAND',
@@ -100,7 +104,8 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 16),
               TextButton(
-                onPressed: () => Navigator.pushNamed(context, '/forgot-password'),
+                onPressed: () =>
+                    Navigator.pushNamed(context, '/forgot-password'),
                 child: const Text(
                   'Забыли пароль?',
                   style: TextStyle(color: AppColors.grey, fontSize: 14),
@@ -113,6 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(color: AppColors.primary, fontSize: 16),
                 ),
               ),
+              const SizedBox(height: 40),
             ],
           ),
         ),
