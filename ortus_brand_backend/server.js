@@ -12,7 +12,16 @@ const app = express();
 
 connectDB();
 
-app.use(cors());
+// CORS настройка для Flutter web
+app.use(
+  cors({
+    origin: "*", // Для локальной разработки разрешаем все origins
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
