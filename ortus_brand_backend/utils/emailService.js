@@ -1,13 +1,20 @@
-const sgMail = require("@sendgrid/mail");
+const nodemailer = require("nodemailer");
 
 // Отправить код восстановления пароля
 const sendResetCode = async (email, code, userName) => {
   try {
-    // Устанавливаем API ключ из переменных окружения
-    // Убедитесь, что 'SENDGRID_API_KEY' добавлена в Railway
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    // Создаем транспорт для локальной разработки
+    const transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST || "smtp.gmail.com",
+      port: process.env.EMAIL_PORT || 587,
+      secure: false, // true для 465, false для других портов
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
 
-    // HTML тело письма (скопировано из вашего старого файла)
+    // HTML тело письма
     const htmlBody = `
     <!DOCTYPE html>
     <html>
@@ -75,25 +82,18 @@ const sendResetCode = async (email, code, userName) => {
     </html>
   `;
 
-    const msg = {
-      to: email,
-      // ВАЖНО: Этот email (EMAIL_USER) должен быть верифицирован в SendGrid
+    // Отправляем письмо
+    await transporter.sendMail({
       from: `"ORTUS Brand" <${process.env.EMAIL_USER}>`,
+      to: email,
       subject: "Код восстановления пароля - ORTUS Brand",
       html: htmlBody,
-    };
+    });
 
-    // Отправляем письмо через API
-    await sgMail.send(msg);
-
+    console.log(`✅ Email sent to ${email}`);
     return true;
   } catch (error) {
-    // Выводим ошибку в логи Railway
-    console.error("Email sending error (SendGrid):", error);
-    if (error.response) {
-      // Показываем детальную ошибку от API SendGrid
-      console.error(error.response.body);
-    }
+    console.error("Email sending error:", error);
     return false;
   }
 };
