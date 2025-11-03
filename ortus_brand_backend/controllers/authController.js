@@ -6,6 +6,15 @@ const register = async (req, res) => {
   try {
     const { fullName, phoneNumber, email, password } = req.body;
 
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
+
+    if (!password || !passwordRegex.test(password)) {
+      return res.status(400).json({
+        message:
+          "Пароль должен содержать минимум 8 символов, одну заглавную букву и один специальный символ",
+      });
+    }
+
     const existingPhone = await User.findOne({ phoneNumber });
     if (existingPhone) {
       return res.status(400).json({ message: "Phone number already exists" });
@@ -222,9 +231,12 @@ const resetPassword = async (req, res) => {
       });
     }
 
-    if (newPassword.length < 6) {
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
+
+    if (!passwordRegex.test(newPassword)) {
       return res.status(400).json({
-        message: "Новый пароль должен содержать минимум 6 символов",
+        message:
+          "Новый пароль должен содержать минимум 8 символов, одну заглавную букву и один специальный символ",
       });
     }
 
