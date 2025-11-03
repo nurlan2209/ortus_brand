@@ -32,7 +32,6 @@ const createProduct = async (req, res) => {
     }
 
     const { name, description, category, price, sizes } = req.body;
-
     const images = req.files?.map((file) => file.path) || [];
 
     const product = await Product.create({
@@ -57,10 +56,9 @@ const updateProduct = async (req, res) => {
     }
 
     const { name, description, category, price, sizes } = req.body;
-
     const updateData = { name, description, category, price };
-    if (sizes) updateData.sizes = JSON.parse(sizes);
 
+    if (sizes) updateData.sizes = JSON.parse(sizes);
     if (req.files && req.files.length > 0) {
       updateData.images = req.files.map((file) => file.path);
     }
@@ -68,7 +66,6 @@ const updateProduct = async (req, res) => {
     const product = await Product.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
     });
-
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
@@ -90,7 +87,6 @@ const deleteProduct = async (req, res) => {
       { isActive: false },
       { new: true }
     );
-
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }

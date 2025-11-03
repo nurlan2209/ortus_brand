@@ -5,7 +5,6 @@ const createOrder = async (req, res) => {
   try {
     const { items } = req.body;
 
-    // Валидация входных данных
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ message: "Cart is empty" });
     }
@@ -14,16 +13,14 @@ const createOrder = async (req, res) => {
     const orderItems = [];
     const productsToUpdate = [];
 
-    // Фаза 1: Валидация всех товаров и проверка остатков
     for (const item of items) {
-      // Проверка обязательных полей
       if (!item.productId || !item.size || !item.quantity) {
         return res.status(400).json({
-          message: "Invalid item data. ProductId, size, and quantity are required",
+          message:
+            "Invalid item data. ProductId, size, and quantity are required",
         });
       }
 
-      // Проверка положительного количества
       if (item.quantity <= 0) {
         return res.status(400).json({
           message: "Quantity must be greater than 0",
@@ -32,21 +29,18 @@ const createOrder = async (req, res) => {
 
       const product = await Product.findById(item.productId);
 
-      // Проверка существования товара
       if (!product) {
         return res.status(404).json({
           message: `Товар с ID ${item.productId} не найден`,
         });
       }
 
-      // Проверка активности товара
       if (!product.isActive) {
         return res.status(400).json({
           message: `Товар "${product.name}" больше не доступен для заказа`,
         });
       }
 
-      // Поиск размера
       const sizeData = product.sizes.find((s) => s.size === item.size);
       if (!sizeData) {
         return res.status(400).json({
@@ -54,14 +48,12 @@ const createOrder = async (req, res) => {
         });
       }
 
-      // Проверка достаточности остатков
       if (sizeData.stock < item.quantity) {
         return res.status(400).json({
           message: `Недостаточно товара "${product.name}" (${item.size}). В наличии: ${sizeData.stock} шт, запрошено: ${item.quantity} шт`,
         });
       }
 
-      // Сохраняем информацию для обновления
       productsToUpdate.push({
         product,
         sizeData,
@@ -81,13 +73,11 @@ const createOrder = async (req, res) => {
       });
     }
 
-    // Фаза 2: Обновление остатков (только если вся валидация прошла успешно)
     for (const { product, sizeData, quantity } of productsToUpdate) {
       sizeData.stock -= quantity;
       await product.save();
     }
 
-    // Фаза 3: Создание заказа
     const order = await Order.create({
       userId: req.user._id,
       items: orderItems,
@@ -99,7 +89,9 @@ const createOrder = async (req, res) => {
     res.status(201).json(order);
   } catch (error) {
     console.error("Create order error:", error);
-    res.status(500).json({ message: "Ошибка создания заказа. Попробуйте позже" });
+    res
+      .status(500)
+      .json({ message: "Ошибка создания заказа. Попробуйте позже" });
   }
 };
 
@@ -173,26 +165,32 @@ const updateOrderStatus = async (req, res) => {
     const { status } = req.body;
     const { id } = req.params;
 
-    // Проверка прав админа
     if (req.user.userType !== "admin") {
       return res.status(403).json({ message: "Admin only" });
     }
 
-    // Валидация статуса
-    const validStatuses = ["pending", "confirmed", "ready", "completed", "cancelled"];
+    const validStatuses = [
+      "pending",
+      "confirmed",
+      "ready",
+      "completed",
+      "cancelled",
+    ];
     if (!status || !validStatuses.includes(status)) {
       return res.status(400).json({
         message: `Invalid status. Must be one of: ${validStatuses.join(", ")}`,
       });
     }
 
-    const order = await Order.findById(id).populate("userId", "fullName phoneNumber");
+    const order = await Order.findById(id).populate(
+      "userId",
+      "fullName phoneNumber"
+    );
 
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    // Обновление статуса
     order.status = status;
     await order.save();
 

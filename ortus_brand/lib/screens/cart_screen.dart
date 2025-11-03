@@ -191,7 +191,6 @@ class _CartScreenState extends State<CartScreen> {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Изображение товара
                             ClipRRect(
                               borderRadius: BorderRadius.circular(8),
                               child: item.image != null
@@ -226,7 +225,6 @@ class _CartScreenState extends State<CartScreen> {
                                     ),
                             ),
                             const SizedBox(width: 12),
-                            // Информация о товаре
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -258,7 +256,6 @@ class _CartScreenState extends State<CartScreen> {
                                         ),
                                       ),
                                       const Spacer(),
-                                      // Контролы количества
                                       Container(
                                         decoration: BoxDecoration(
                                           border: Border.all(
@@ -328,7 +325,6 @@ class _CartScreenState extends State<CartScreen> {
                                 ],
                               ),
                             ),
-                            // Кнопка удаления
                             IconButton(
                               icon: const Icon(
                                 Icons.close,
@@ -345,7 +341,6 @@ class _CartScreenState extends State<CartScreen> {
                   },
                 ),
               ),
-              // Панель итого и оформления заказа
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(

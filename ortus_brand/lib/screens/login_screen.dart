@@ -47,14 +47,13 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          // 👈 добавляем
           padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.1,
-              ), // немного отступа сверху
+              ), 
               Image.asset('assets/images/logo.png', height: 120),
               const Text(
                 'ORTUS BRAND',

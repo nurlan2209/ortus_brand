@@ -12,14 +12,12 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  // Добавлено: ключ для формы для обработки валидации
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  // Функция для валидации пароля (Исправлен regex для совместимости с Dart/Flutter)
   String? _validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return 'Пожалуйста, введите пароль.';
@@ -27,18 +25,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (value.length < 8) {
       return 'Пароль должен содержать минимум 8 символов.';
     }
-    // Проверка на заглавную букву
     if (!value.contains(RegExp(r'[A-Z]'))) {
       return 'Пароль должен содержать хотя бы одну заглавную букву.';
     }
-    // Проверка на специальный символ (используется безопасный поднабор спецсимволов)
     if (!value.contains(RegExp(r'[!@#\$%^&*(),.?":{}|<>]'))) {
       return 'Пароль должен содержать хотя бы один специальный символ.';
     }
     return null;
   }
 
-  // Общая функция для валидации на пустоту
   String? _validateNonEmpty(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
       return 'Поле "$fieldName" не может быть пустым.';
@@ -47,7 +42,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void _register() async {
-    // Добавлено: Вызов валидации формы перед регистрацией
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -103,12 +97,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               const SizedBox(height: 40),
-              // Обернуто в Form для валидации
               Form(
                 key: _formKey,
                 child: Column(
                   children: [
-                    // Заменено на TextFormField и добавлен валидатор
                     TextFormField(
                       controller: _nameController,
                       style: const TextStyle(color: AppColors.black),
@@ -125,7 +117,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       validator: (value) => _validateNonEmpty(value, 'ФИО'),
                     ),
                     const SizedBox(height: 16),
-                    // Заменено на TextFormField и добавлен валидатор
                     TextFormField(
                       controller: _phoneController,
                       style: const TextStyle(color: AppColors.black),
@@ -144,7 +135,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           _validateNonEmpty(value, 'Номер телефона'),
                     ),
                     const SizedBox(height: 16),
-                    // Заменено на TextFormField и добавлен валидатор
                     TextFormField(
                       controller: _emailController,
                       style: const TextStyle(color: AppColors.black),
@@ -162,7 +152,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       validator: (value) => _validateNonEmpty(value, 'Email'),
                     ),
                     const SizedBox(height: 16),
-                    // Заменено на TextFormField и добавлен валидатор для пароля
                     TextFormField(
                       controller: _passwordController,
                       style: const TextStyle(color: AppColors.black),
@@ -179,7 +168,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         errorMaxLines: 3,
                       ),
                       validator:
-                          _validatePassword, // Используется исправленная функция валидации
+                          _validatePassword,
                     ),
                     const SizedBox(height: 24),
                     CustomButton(

@@ -16,15 +16,12 @@ class CartProvider extends ChangeNotifier {
     return total;
   }
 
-  // Добавить товар в корзину
   void addItem(OrderItem item) {
-    // Проверяем, есть ли уже такой товар с таким же размером в корзине
     final existingIndex = _items.indexWhere(
       (i) => i.productId == item.productId && i.size == item.size,
     );
 
     if (existingIndex >= 0) {
-      // Если товар уже есть, увеличиваем количество
       final existingItem = _items[existingIndex];
       _items[existingIndex] = OrderItem(
         productId: existingItem.productId,
@@ -35,13 +32,11 @@ class CartProvider extends ChangeNotifier {
         image: existingItem.image,
       );
     } else {
-      // Если товара нет, добавляем новый
       _items.add(item);
     }
     notifyListeners();
   }
 
-  // Удалить товар из корзины
   void removeItem(String productId, String size) {
     _items.removeWhere(
       (item) => item.productId == productId && item.size == size,
@@ -49,7 +44,6 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Обновить количество товара
   void updateQuantity(String productId, String size, int newQuantity) {
     if (newQuantity <= 0) {
       removeItem(productId, size);
@@ -74,7 +68,6 @@ class CartProvider extends ChangeNotifier {
     }
   }
 
-  // Очистить корзину
   void clearCart() {
     _items.clear();
     notifyListeners();

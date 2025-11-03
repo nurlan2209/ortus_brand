@@ -100,7 +100,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       image: _product!.images.isNotEmpty ? _product!.images[0] : null,
     );
 
-    // Добавляем в корзину и переходим к оформлению
     Provider.of<CartProvider>(context, listen: false).addItem(orderItem);
     Navigator.pushNamed(context, '/cart');
   }

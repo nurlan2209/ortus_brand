@@ -81,7 +81,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
-      resizeToAvoidBottomInset: true, // <--- важно
+      resizeToAvoidBottomInset: true, 
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
@@ -92,7 +92,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          // <--- решает проблему overflow
           padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

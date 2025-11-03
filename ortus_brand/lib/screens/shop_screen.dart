@@ -298,7 +298,6 @@ class _ShopScreenState extends State<ShopScreen> {
           ),
           const SizedBox(height: 16),
 
-          // Профиль - для всех пользователей
           _buildMenuItem(
             icon: Icons.edit,
             title: 'Редактировать профиль',
@@ -307,7 +306,6 @@ class _ShopScreenState extends State<ShopScreen> {
 
           const SizedBox(height: 8),
 
-          // Мои заказы - только для customer
           if (user?.isAdmin == false)
             _buildMenuItem(
               icon: Icons.shopping_bag,
@@ -315,7 +313,6 @@ class _ShopScreenState extends State<ShopScreen> {
               onTap: () => Navigator.pushNamed(context, '/my-orders'),
             ),
 
-          // Админские функции
           if (user?.isAdmin == true) ...[
             _buildMenuItem(
               icon: Icons.inventory,

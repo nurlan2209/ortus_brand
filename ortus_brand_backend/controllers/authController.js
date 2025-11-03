@@ -83,7 +83,6 @@ const login = async (req, res) => {
   }
 };
 
-// Получить данные текущего пользователя
 const getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select("-password");
@@ -97,12 +96,10 @@ const getMe = async (req, res) => {
   }
 };
 
-// Обновить данные пользователя (ФИО и телефон)
 const updateDetails = async (req, res) => {
   try {
     const { fullName, phoneNumber } = req.body;
 
-    // Валидация
     if (!fullName && !phoneNumber) {
       return res.status(400).json({
         message: "At least one field (fullName or phoneNumber) is required",
@@ -114,7 +111,6 @@ const updateDetails = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Проверка уникальности телефона (если меняется)
     if (phoneNumber && phoneNumber !== user.phoneNumber) {
       const existingUser = await User.findOne({ phoneNumber });
       if (existingUser) {
@@ -144,12 +140,10 @@ const updateDetails = async (req, res) => {
   }
 };
 
-// Изменить пароль
 const changePassword = async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
 
-    // Валидация
     if (!oldPassword || !newPassword) {
       return res.status(400).json({
         message: "Old password and new password are required",
@@ -167,13 +161,11 @@ const changePassword = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Проверка старого пароля
     const isMatch = await user.comparePassword(oldPassword);
     if (!isMatch) {
       return res.status(401).json({ message: "Неверный текущий пароль" });
     }
 
-    // Обновление пароля (хэширование произойдет автоматически через pre-save hook)
     user.password = newPassword;
     await user.save();
 
@@ -184,7 +176,6 @@ const changePassword = async (req, res) => {
   }
 };
 
-// Запросить код восстановления пароля
 const requestPasswordReset = async (req, res) => {
   try {
     const { email } = req.body;
@@ -195,22 +186,23 @@ const requestPasswordReset = async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: "Пользователь с таким email не найден" });
+      return res
+        .status(404)
+        .json({ message: "Пользователь с таким email не найден" });
     }
 
-    // Генерируем 6-значный код
     const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-    // Сохраняем код и время истечения (15 минут)
     user.resetCode = resetCode;
-    user.resetCodeExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 минут
+    user.resetCodeExpires = new Date(Date.now() + 15 * 60 * 1000);
     await user.save();
 
-    // Отправляем код на email
     const emailSent = await sendResetCode(email, resetCode, user.fullName);
 
     if (!emailSent) {
-      return res.status(500).json({ message: "Не удалось отправить код на email" });
+      return res
+        .status(500)
+        .json({ message: "Не удалось отправить код на email" });
     }
 
     res.json({ message: "Код восстановления отправлен на email" });
@@ -220,14 +212,13 @@ const requestPasswordReset = async (req, res) => {
   }
 };
 
-// Сбросить пароль с кодом
 const resetPassword = async (req, res) => {
   try {
     const { email, code, newPassword } = req.body;
 
     if (!email || !code || !newPassword) {
       return res.status(400).json({
-        message: "Email, код и новый пароль обязательны"
+        message: "Email, код и новый пароль обязательны",
       });
     }
 
@@ -245,17 +236,14 @@ const resetPassword = async (req, res) => {
       return res.status(404).json({ message: "Пользователь не найден" });
     }
 
-    // Проверяем код
     if (user.resetCode !== code) {
       return res.status(401).json({ message: "Неверный код восстановления" });
     }
 
-    // Проверяем, не истек ли код
     if (!user.resetCodeExpires || user.resetCodeExpires < new Date()) {
       return res.status(401).json({ message: "Код восстановления истек" });
     }
 
-    // Обновляем пароль
     user.password = newPassword;
     user.resetCode = undefined;
     user.resetCodeExpires = undefined;
@@ -275,5 +263,5 @@ module.exports = {
   updateDetails,
   changePassword,
   requestPasswordReset,
-  resetPassword
+  resetPassword,
 };

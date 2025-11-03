@@ -72,7 +72,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
           backgroundColor: Colors.green,
         ),
       );
-      _loadOrders(); // Перезагружаем список заказов
+      _loadOrders(); 
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -202,7 +202,6 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                           children: [
                             const Divider(),
                             const SizedBox(height: 8),
-                            // Список товаров в заказе
                             ...order.items.map((item) => Padding(
                                   padding: const EdgeInsets.only(bottom: 12),
                                   child: Row(
@@ -270,7 +269,6 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                               ),
                             ),
                             const SizedBox(height: 8),
-                            // Dropdown для изменения статуса
                             Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 12,

@@ -147,7 +147,6 @@ class AuthService {
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else {
-        // Возвращаем ошибку от сервера
         final error = json.decode(response.body);
         return {'error': error['message'] ?? 'Unknown error'};
       }

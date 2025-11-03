@@ -79,7 +79,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             backgroundColor: Colors.green,
           ),
         );
-        _loadUserData(); // Перезагружаем данные
+        _loadUserData(); 
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -121,7 +121,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             backgroundColor: Colors.green,
           ),
         );
-        // Очищаем поля пароля
         _oldPasswordController.clear();
         _newPasswordController.clear();
         _confirmPasswordController.clear();
@@ -156,7 +155,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  // Информация о пользователе
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
@@ -219,7 +217,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Форма редактирования данных
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
@@ -285,7 +282,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Форма смены пароля
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
